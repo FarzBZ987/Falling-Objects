@@ -48,6 +48,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Joystick",
+            "id": "391845a8-caba-4d8a-8f5e-eaa6f98e2c6a",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Value",
+                    "id": "ec5db920-f4da-4d71-aa58-c65cfe4ef697",
+                    "expectedControlType": "Analog",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "b40ef368-a8e7-4219-8579-136eb2ef9470",
+                    "path": "<AndroidJoystick>/stick/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []

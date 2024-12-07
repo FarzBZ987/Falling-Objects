@@ -70,6 +70,34 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Joystick"",
+            ""id"": ""391845a8-caba-4d8a-8f5e-eaa6f98e2c6a"",
+            ""actions"": [
+                {
+                    ""name"": ""New action"",
+                    ""type"": ""Value"",
+                    ""id"": ""ec5db920-f4da-4d71-aa58-c65cfe4ef697"",
+                    ""expectedControlType"": ""Analog"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""b40ef368-a8e7-4219-8579-136eb2ef9470"",
+                    ""path"": ""<AndroidJoystick>/stick/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""New action"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -78,6 +106,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_Touchsreen = asset.FindActionMap("Touchsreen", throwIfNotFound: true);
         m_Touchsreen_TouchPosition = m_Touchsreen.FindAction("Touch Position", throwIfNotFound: true);
         m_Touchsreen_Touch = m_Touchsreen.FindAction("Touch", throwIfNotFound: true);
+        // Joystick
+        m_Joystick = asset.FindActionMap("Joystick", throwIfNotFound: true);
+        m_Joystick_Newaction = m_Joystick.FindAction("New action", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -174,9 +205,46 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         }
     }
     public TouchsreenActions @Touchsreen => new TouchsreenActions(this);
+
+    // Joystick
+    private readonly InputActionMap m_Joystick;
+    private IJoystickActions m_JoystickActionsCallbackInterface;
+    private readonly InputAction m_Joystick_Newaction;
+    public struct JoystickActions
+    {
+        private @InputControls m_Wrapper;
+        public JoystickActions(@InputControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Newaction => m_Wrapper.m_Joystick_Newaction;
+        public InputActionMap Get() { return m_Wrapper.m_Joystick; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(JoystickActions set) { return set.Get(); }
+        public void SetCallbacks(IJoystickActions instance)
+        {
+            if (m_Wrapper.m_JoystickActionsCallbackInterface != null)
+            {
+                @Newaction.started -= m_Wrapper.m_JoystickActionsCallbackInterface.OnNewaction;
+                @Newaction.performed -= m_Wrapper.m_JoystickActionsCallbackInterface.OnNewaction;
+                @Newaction.canceled -= m_Wrapper.m_JoystickActionsCallbackInterface.OnNewaction;
+            }
+            m_Wrapper.m_JoystickActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Newaction.started += instance.OnNewaction;
+                @Newaction.performed += instance.OnNewaction;
+                @Newaction.canceled += instance.OnNewaction;
+            }
+        }
+    }
+    public JoystickActions @Joystick => new JoystickActions(this);
     public interface ITouchsreenActions
     {
         void OnTouchPosition(InputAction.CallbackContext context);
         void OnTouch(InputAction.CallbackContext context);
+    }
+    public interface IJoystickActions
+    {
+        void OnNewaction(InputAction.CallbackContext context);
     }
 }
